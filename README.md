@@ -1,44 +1,90 @@
+
 # tPowerBilby
-tPowerBilby is a tBilby based python package that is intended for estimating LIGO and VIRGO Amplitude Spectral Density.  Link to the paper and to tBilby repository
 
-Installation: 
-pip install tPowerBilby (doesnt exsits yet) 
+**tPowerBilby** is a Python package based on tBilby, designed for estimating the Amplitude Spectral Density (ASD) for LIGO and VIRGO. [Link to the paper] and [Link to tBilby repository].
 
-Usage:
+## Installation
+
+```sh
+pip install tPowerBilby  # (Note: Package not available yet)
+```
+
+## Usage
+
+```sh
 tPowerBilby config.json
+```
 
+### Example `config.json`
 
+```json
+{
+    "user_label": "GW150914_post",
+    "trigger_time": 1126259470.4,
+    "det": "H1"
+}
+```
 
-A typpical config.json looks like:
-{"user_label": "GW150914_post", "trigger_time": 1126259470.4, "det": "H1"}
+### Full List of `config.json` Options
 
-The full list of config.json options and their meaning (and their default value) is the following:
+- **`use_simpler_lorentzian_in_round_0`**: `True`  
+  Use a simpler version of the Lorentzian in round 0 to save time with fewer parameters to infer.
+  
+- **`det`**: `'H1'`  
+  The interferometer name.
+  
+- **`split_run`**: `True`  
+  Split the runs into two rounds and multiple sections to infer each section separately.
+  
+- **`user_label`**: `'GW150419'`  
+  Output file name.
+  
+- **`trigger_time`**: `1126259462.4`  
+  GPS trigger time.
+  
+- **`outdir`**: `'outdir'`  
+  Output directory name.
 
-"use_simpler_lorenztain_in_round_0": True  // Use teh simpler version of Lorentizain in round 0, this saves time since there are less parameters to infer.      
-"det":'H1'  // the interformter name 
-"split_run" : True // split the runs into two rounds and multiple sections, to infer each section seperatly 
-"user_label"  : 'GW150419' // output file name 
-"trigger_time" : 1126259462.4 // GPS trigger time 
-"outdir" : 'outdir' // output directory name 
+- **`maximum_frequency`**: `896`  
+  Max frequency in Hz.
+  
+- **`minimum_frequency`**: `20`  
+  Min frequency in Hz.
+  
+- **`roll_off`**: `0.4`  
+  Roll-off duration of the Tukey window in seconds (default is 0.4s).
 
-"maximum_frequency"  : 896 // max freqency in Hz
-"minimum_frequency": 20 // min freqency in Hz
-"roll_off" : 0.4  # Roll off duration of tukey window in seconds, default is 0.4s
+- **`duration`**: `4`  
+  Analysis segment duration in seconds.
+  
+- **`post_trigger_duration`**: `2`  
+  Time between the trigger time and the end of the segment.  
+  Important: The end time of the ASD is defined as `trigger + post_trigger_duration - duration`, so the start time is `trigger + post_trigger_duration - duration - duration`. This way, you can provide the trigger time of the GW event.
 
-"duration": 4  # Analysis segment duration
-"post_trigger_duration" = 2  # Time between trigger time and end of segment. 
-Important, the end time of the asd is defined to be: trigger+post_trigger_duration-duration so the start time is trigger+post_trigger_duration-duration-duration
-This way, one can provide the trigger time of the gw event
+- **`n_exp`**: `5`  
+  Max number of power laws.
+  
+- **`n_lines`**: `20`  
+  Max number of lines in each segment.
 
-"n_exp" : 5 \\ max number of power laws  
- "n_lines" : 20 \\ max number of lines in each segment  
+- **`min_freq_spacing`**: `30`  
+  For a point to be identified as a "cut" point, it has to be in an empty (from lines) segment of `min_freq_spacing` Hz.
+  
+- **`min_freq_segment`**: `100`  
+  Each segment should be larger than `min_freq_segment` Hz.
 
-"min_freq_spacing":30 \\ segmentation algorithm settings. for a point to be identify as a "cut" point, it has to lay in an empty (from lines) segment of "min_freq_spacing" Hz  
-"min_freq_segment" : 100 \\ the size of each segment should be larger than "min_freq_segment"
+- **`use_low_freq_detector`**: `False`  
+  Initiate a simple lines detector in the low-frequency region, in addition to the usual lines detection algorithm.
+  
+- **`low_freq_limit_detector`**: `40`  
+  Determines the frequency below which the line detector works.
 
-"use_low_freq_detector" : False \\ initiate a simple lines detector in the low frequency region, this is in addition to the usual lines detection algorithm  
-"low_freq_limit_detector" : 40 \\ determines the frequency of which below the line detector works 
+## Notes
 
+- Make sure to adjust the configuration options according to your analysis needs.
+- The package is still under development, so some bugs may appear. 
+
+Feel free to reach out for any issues or contributions!
 
 
 
