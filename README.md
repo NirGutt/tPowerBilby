@@ -94,7 +94,7 @@ tPowerBilby config.json
 - Make sure to adjust the configuration options according to your analysis needs.
 - The package is still under development, so some bugs may appear. 
 
-Feel free to reach out for any issues or contributions!
+Feel free to reach out for any issues!
 
 
 
