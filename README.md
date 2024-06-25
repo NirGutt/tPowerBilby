@@ -5,11 +5,11 @@
 
 ## Quick Links
 
-- [tPowerBilby Paper](link/to/paper)
-- [tBilby Repository](link/to/tBilby/repo)
+- [tPowerBilby Paper]([link/to/paper](https://arxiv.org/pdf/2404.04460))
+- [tBilby Repository]([link/to/tBilby/repo](https://github.com/tBilby/tBilby.git))
 
 ## documentation Links
-- [Configuration Options](path/to/configuration/README.md)
+- [Configuration Options](doc/README_config.md)
 - [Post Processing](doc/README_post_processing.md)
 
 
