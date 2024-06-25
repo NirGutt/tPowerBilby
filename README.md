@@ -1,7 +1,16 @@
 
 # tPowerBilby
 
-**tPowerBilby** is a Python package based on tBilby, designed for estimating the Amplitude Spectral Density (ASD) for LIGO and VIRGO. [Link to the paper] and [Link to tBilby repository].
+**tPowerBilby** is a Python package based on tBilby, designed for estimating the Amplitude Spectral Density (ASD) for LIGO and VIRGO. 
+
+## Quick Links
+
+- [tPowerBilby Paper](link/to/paper)
+- [tBilby Repository](link/to/tBilby/repo)
+
+- [Configuration Options](path/to/configuration/README.md)
+- [Post Processing](doc/README_post_processing.md)
+
 
 ## Installation
 
