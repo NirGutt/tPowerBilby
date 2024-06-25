@@ -10,8 +10,8 @@
 - [tBilby Repository]([link/to/tBilby/repo](https://github.com/tBilby/tBilby.git))
 
 ## documentation Links
-- [Configuration Options](doc/README_config.md)
-- [Post Processing](doc/README_post_processing.md)
+- [Full list of Configuration Options](doc/README_config.md)
+- [Post Processing Functionality](doc/README_post_processing.md)
 
 
 ## Installation
