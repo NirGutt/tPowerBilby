@@ -1,18 +1,19 @@
-
 # tPowerBilby
 
-**tPowerBilby** is a Python package based on tBilby, designed for estimating the Amplitude Spectral Density (ASD) for LIGO and VIRGO. 
+**tPowerBilby** is a Python package based on tBilby, designed for estimating the Amplitude Spectral Density (ASD) for LIGO and VIRGO. A link to the paper that describes its methodology can be found below. 
+
+In a nutshell, by default, the ASD data is split into several parts. Each part is treated almost independently, where a transdimensional Bayesian inference finds the best description for it. Then, during post-processing, a final posterior sample is produced. These steps are taken to maintain reasonable inference time with very high flexibility (i.e., many parameters).  
 
 ## Quick Links
 
-- [tPowerBilby Paper]([link/to/paper](https://arxiv.org/pdf/2404.04460)) - still missing
-- [tBilby Paper]([link/to/paper](https://arxiv.org/pdf/2404.04460))
-- [tBilby Repository]([link/to/tBilby/repo](https://github.com/tBilby/tBilby.git))
+- [tPowerBilby Paper](https://arxiv.org/pdf/2404.04460) - still missing
+- [tBilby Paper](https://arxiv.org/pdf/2404.04460)
+- [tBilby Repository](https://github.com/tBilby/tBilby.git)
 
-## documentation Links
+## Documentation Links
+
 - [Full list of Configuration Options](doc/README_config.md)
 - [Post Processing Functionality](doc/README_post_processing.md)
-
 
 ## Installation
 
@@ -26,6 +27,8 @@ pip install tPowerBilby  # (Note: Package not available yet)
 tPowerBilby config.json
 ```
 
+Once done (after a few hours...), several result files will be created. To get full posterior samples, additional processing is required (in the case of multiple range inference). Please see the post-processing section for more information. 
+
 ### Example `config.json`
 
 ```json
@@ -36,13 +39,5 @@ tPowerBilby config.json
 }
 ```
 
-
 Feel free to reach out for any issues!
-
-
-
-
-
-
-
 
