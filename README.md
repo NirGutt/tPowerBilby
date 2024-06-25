@@ -5,7 +5,8 @@
 
 ## Quick Links
 
-- [tPowerBilby Paper]([link/to/paper](https://arxiv.org/pdf/2404.04460))
+- [tPowerBilby Paper]([link/to/paper](https://arxiv.org/pdf/2404.04460)) - still missing
+- [tBilby Paper]([link/to/paper](https://arxiv.org/pdf/2404.04460))
 - [tBilby Repository]([link/to/tBilby/repo](https://github.com/tBilby/tBilby.git))
 
 ## documentation Links
