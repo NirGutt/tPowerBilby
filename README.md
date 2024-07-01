@@ -13,7 +13,7 @@ In a nutshell, by default, the ASD data is split into several parts. Each part i
 ## Documentation Links
 
 - [Full list of Configuration Options](doc/README_config.md)
-- [Post Processing Functionality](doc/README_post_processing.md)
+- [Post Processing Functionality](doc/README_postprocessing.md)
 
 ## Installation
 
