@@ -38,7 +38,7 @@ Once done (after a few hours...), several result files will be created. To get f
     "det": "H1"
 }
 ```
-![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![alt text]((https://github.com/NirGutt/tPowerBilby/blob/main/tpowerbilby.png)?raw=true)
 
 
 
