@@ -17,14 +17,13 @@ In a nutshell, by default, the ASD data is split into several parts. Each part i
 
 ## Installation
 
-```sh
-pip install tPowerBilby  # (Note: Package not available yet)
-```
+1. Install **tbilby**. 
+2. Download the package and work within the local directory, as this code does not provide functionality for external use.
 
 ## Usage
 
 ```sh
-tPowerBilby config.json
+python tPowerBilby.py config.json
 ```
 
 Once done (after a few hours...), several result files will be created. To get full posterior samples, additional processing is required (in the case of multiple range inference). Please see the post-processing section for more information. 
@@ -38,6 +37,10 @@ Once done (after a few hours...), several result files will be created. To get f
     "det": "H1"
 }
 ```
+### Code Architecture
+
+Here is how the code is structured in case you want to take a look under the hood.
+
 ![alt text](https://github.com/NirGutt/tPowerBilby/blob/main/tpowerbilby.png)
 
 
