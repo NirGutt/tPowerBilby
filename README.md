@@ -26,7 +26,7 @@ In a nutshell, by default, the ASD data is split into several parts. Each part i
 python tPowerBilby.py config.json
 ```
 
-Once done (after a few hours...), several result files will be created. To get full posterior samples, additional processing is required (in the case of multiple range inference). Please see the post-processing section for more information. 
+Once done (after a few hours...), several result files will be created. Some are simple images used for validation. Other contain the ASD estimations. Please see the post-processing section for more information. 
 
 ### Example `config.json`
 
