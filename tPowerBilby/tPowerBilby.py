@@ -8,6 +8,7 @@ import sys
 from bilby.core.prior import LogUniform, TruncatedGaussian
 
 import Utils.asd_utilies as asd_utilies
+from Utils.asd_utilies import logger
 import Utils.asd_data_manipulations as asd_data_manipulations 
 import Utils.PreProcessingtPowerBilby as PreProcessingtPowerBilby
 import Utils.PostProcessingtPowerBilby as PostProcessingtPowerBilby
@@ -273,9 +274,10 @@ def run_fit_on_segment(segmment_i,resume=False):
             
     xx=xx_main[Inx_xx]
     yy=yy_main[Inx_xx]
-    print(('region',segmment_i,f_i,f_f))        
-    print(('max xx', np.max(xx)))
-    print(('min xx', np.min(xx)))
+    
+    logger(('region',segmment_i,f_i,f_f),__name__)        
+    #print(('max xx', np.max(xx)))
+    #print(('min xx', np.min(xx)))
 
     priors_t = tbilby.core.base.create_transdimensional_priors(TransdimensionalConditionalTransInterped_loc,f'loc',nmax=n_lines_per_split[segmment_i],nested_conditional_transdimensional_params=[],conditional_params=[],prior_dict_to_add=priors_t,xx=xx.copy(),yy=yy.copy(),
                                                                        minimum=PreProcesstPowerBilby_class.GetFrequency_SplitPoints()[segmment_i],
@@ -340,7 +342,7 @@ def run_fit_on_segment(segmment_i,resume=False):
             #print(self.function_keys)
             if 'sigma' in self.function_keys: # remove sigma from function keys otherwise it get sent to the model
                 self.function_keys.pop['sigma']
-                print('Removing sigma')
+                #print('Removing sigma')
       
         def lines_seperator_model(self):
             model_parameters = {k: self.parameters[k] for k in self.function_keys if k != 'sigma'}    
@@ -366,12 +368,13 @@ def run_fit_on_segment(segmment_i,resume=False):
     
     # for seom reason the resume doesn't work, lets override it 
     file_path = outdir+'/'+label_sampling_local+'_result.json'
-    print(('checking if results are in ', file_path, ' resume is' , resume))
+    logger(('checking if results are in ', file_path, ' resume is' , resume),inspect.currentframe().f_code.co_name)   
     if resume and os.path.exists(file_path):     
-        print('loadigng results')
+        logger('loadigng results',inspect.currentframe().f_code.co_name)
+        
         result = bilby.read_in_result(filename=file_path) 
     else:    
-        print('rerunning sampling')
+        logger('running sampling',inspect.currentframe().f_code.co_name)
         result = bilby.run_sampler(
                 likelihood=likelihood,
                 priors=priors_t,
@@ -434,7 +437,9 @@ detectors = ["H1", "L1","V1"]
 
 # Check if the correct number of command-line arguments are provided
 if len(sys.argv) != 2:
-    print("Usage: didnt find a config file:  python my_script.py ASD_config.json")
+    logger("Usage: didnt find a config file, please run (teh config can be any name you would like): python tPowerBilby.py config.json",
+           inspect.currentframe().f_code.co_name,'ERROR')
+    
     sys.exit(1)
 
 # Get the path to the configuration file from the command-line arguments
@@ -449,7 +454,9 @@ config =asd_utilies.handle_config(config)
 # settings, probably a more comprensive validation is needed: 
 det=config['det']
 if det not in detectors:
-    print('mmm, not sure how break this to you, but you provided me with a funny detector name. See you later mate!')
+    logger('mmm, not sure how break this to you, but you provided me with a funny detector name. See you later mate!',   
+           inspect.currentframe().f_code.co_name,'ERROR')
+    
     sys.exit()
     
 user_label =config['user_label']
@@ -503,8 +510,11 @@ n_lines_per_split = PreProcesstPowerBilby_class.GetNlines_inEach_SplitPoints()
 I_keep_data_indices = PreProcesstPowerBilby_class.GetHQ_dataPoints_Incides()
 
 # save some data out
+
+
 np.save(outdir+'/Output/'+label+'_keep_indices.npy', I_keep_data_indices)
-print(('keep indicaes shape ',I_keep_data_indices.shape ))
+logger('saved freq. indices to work on ',inspect.currentframe().f_code.co_name)
+#print(('keep indicaes shape ',I_keep_data_indices.shape ))
 
 if config['fit_entire_data']==True:
      I_keep_data_indices = [True] * len(I_keep_data_indices)
@@ -516,14 +526,15 @@ y_peaks_int,fit_lines_prior = FPH.process_lines_prior(gap_threshold=10,x=x,x_pea
 
 I_FPH = y_peaks_int == 0 
 np.save(outdir+'/Output/'+label+'_smooth_indices.npy', I_FPH)
-print(('keep smooth indicaes shape ',I_FPH.shape ))
+logger('saved braodband freq. indicate to work on ',inspect.currentframe().f_code.co_name)
+#print(('keep smooth indicaes shape ',I_FPH.shape ))
 
 
 x_est= get_x_est(x)
 
 sampled_1st,no_lines_curve,model_smooth,df_samples_1st = FPH.run_PL_fit(x=x[I_FPH],y=y[I_FPH],x_est=x_est,welch_y=PreProcesstPowerBilby_class.welch_y[I_FPH],
                                                                         preprocess_cls=PreProcesstPowerBilby_class,outdir=outdir,label=label,num_of_samples=N_samples,
-                                                                        resume=resume,n_exp=config['n_exp'])
+                                                                        resume=resume,n_exp=config['n_exp'],debug=config['debug'])
 skip_samples_writing=config['skip_samples_writing']
 # save hybrid samples 
 hybrid_samples=[]
@@ -541,18 +552,17 @@ if len(x_est)==len(x):
 
     if not skip_samples_writing:
         with open(filename, 'wb') as f:
-                    pickle.dump(hybrid_samples, f)
+                    pickle.dump(np.array(hybrid_samples), f)
         with open(filename_max, 'wb') as f:
-                    pickle.dump(max_like, f)            
+                    pickle.dump(np.array(max_like).reshape(-1,1), f)            
 
-        print('done writing 1st stage results ')                   
-
-
+         
+    
 else:
-     print('WARNING:: Couldnt write hybrid samples since the requested frequency_resolution != 1/Duration')        
+     logger('Couldnt write hybrid samples since the requested frequency_resolution != 1/Duration',
+           inspect.currentframe().f_code.co_name,'WARNING')        
+      
 
-
-ddddd
 
 # this is done in the local fit level 
 input_sections = list(np.arange(len(freq_split_vec)-1))# the number of section is one less than the number of points 
@@ -561,7 +571,9 @@ bool_flags = [resume] * len(input_sections)
 with concurrent.futures.ProcessPoolExecutor() as executor:
         # Run the fit in parallel with different labels
         results = list(executor.map(run_fit_on_segment, input_sections,bool_flags))
-print('Done sampling ')
+
+logger('Done sampling',inspect.currentframe().f_code.co_name)        
+      
 final_max_curve = no_lines_curve.copy()    
 final_sampled =  np.array(sampled_1st.copy())   
 
@@ -579,15 +591,26 @@ for result in results:
        
         collect_dfs.append(df_2nd.copy())
 
+# deal with the case we remove some indices 
+if np.sum(~I_keep_data_indices) > 0: 
+    logger('Found that some low quality data was removed form the fit, taking care of that for you mate!',
+           inspect.currentframe().f_code.co_name)
+    final_max_curve[~I_keep_data_indices] =  PreProcesstPowerBilby_class.welch_y[~I_keep_data_indices]
+    for l in np.arange(len(final_sampled_NB)):
+         final_sampled_NB[l,~I_keep_data_indices] = PreProcesstPowerBilby_class.welch_y[~I_keep_data_indices] 
+
+# fill the final thing 
 final_sampled[:,~I_FPH] = final_sampled_NB[:,~I_FPH]
-print('done opening results ')
+
+logger('Done opening results',inspect.currentframe().f_code.co_name) 
 filename=outdir+'/Output/asd_samples_'+label+'.pkl'
 
 if not skip_samples_writing:
     with open(filename, 'wb') as f:
-                pickle.dump(final_sampled, f)
+                pickle.dump(np.array(final_sampled), f)
 
-    print('done writing results ')                    
+ 
+    logger('Done writing results',inspect.currentframe().f_code.co_name)             
 
 
 # now do the final analysis using the maximum likelihood 
@@ -608,7 +631,6 @@ PostProcessingtPowerBilby_class= PostProcessingtPowerBilby.PostProcessingtPowerB
                                                            config=config,
                                                            sections_results=collect_dfs,
                                                            first_phase_res=df_samples_1st)
-
 
 
 
