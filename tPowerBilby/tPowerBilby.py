@@ -1,5 +1,5 @@
 import bilby 
-from context import tbilby
+import tbilby
 import pickle
 import numpy as np
 from scipy import interpolate
