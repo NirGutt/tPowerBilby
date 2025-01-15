@@ -1,58 +1,37 @@
-### Full List of `config.json` Options
+# Standardized Configuration Parameters
 
-- **`use_simpler_lorentzian_in_round_0`**: `True`  
-  Use a simpler version of the Lorentzian in round 0 to save time with fewer parameters to infer.
-  
-- **`det`**: `'H1'`  
-  The interferometer name.
-  
-- **`split_run`**: `True`  
-  Split the runs into two rounds and multiple sections to infer each section separately.
-  
-- **`user_label`**: `'GW150419'`  
-  Output file name.
-  
-- **`trigger_time`**: `1126259462.4`  
-  GPS trigger time.
-  
-- **`outdir`**: `'outdir'`  
-  Output directory name.
+This document provides an explanation of the configuration parameters used in the analysis. 
 
-- **`maximum_frequency`**: `896`  
-  Max frequency in Hz.
-  
-- **`minimum_frequency`**: `20`  
-  Min frequency in Hz.
-  
-- **`roll_off`**: `0.4`  
-  Roll-off duration of the Tukey window in seconds (default is 0.4s).
+## General Configuration
+- **`det`**: Specifies the detector to use (e.g., `'H1'` for LIGO Hanford).
+- **`trigger_time`**: The GPS time of the event trigger.
+- **`maximum_frequency`**: Maximum frequency in Hz for the analysis range.
+- **`minimum_frequency`**: Minimum frequency in Hz for the analysis range.
+- **`roll_off`**: Roll-off duration of the Tukey window (in seconds), default is `0.4s`.
+- **`duration`**: Total duration (in seconds) of the analysis segment.
+- **`frequency_resolution`**: Frequency resolution, default is `1 / duration`, but can be modified to match a desired resolution since a continuous model is used (not fully tested).
+- **`post_trigger_duration`**: Time (in seconds) between the trigger time and the end of the segment.
 
-- **`duration`**: `4`  
-  Analysis segment duration in seconds.
-  
-- **`post_trigger_duration`**: `2`  
-  Time between the trigger time and the end of the segment.  
-  Important: The end time of the ASD is defined as `trigger + post_trigger_duration - duration`, so the start time is `trigger + post_trigger_duration - duration - duration`. This way, you can provide the trigger time of the GW event.
+## Pre-Processing Settings
+- **`pre_processing_n_looking_back`**: Number of segments to look back during preprocessing.
+- **`min_freq_segment`**: Minimum frequency range (in Hz) for each segment.
+- **`low_freq_limit_detector`**: Below this value, RANSAC analysis is used to detect the lines.
+- **`pre_processing_end_time`**: The end time for preprocessing.
 
-- **`n_exp`**: `5`  
-  Max number of power laws.
-  
-- **`n_lines`**: `20`  
-  Max number of lines in each segment.
+## Sampling Settings
+- **`n_exp`**: Number of exponentials used for sampling.
+- **`n_lines`**: Number of spectral lines to include in the model for each segment.
+- **`user_label`**: User-defined label for the analysis (e.g., `'GW150419'`).
+- **`outdir`**: Directory where output files will be stored.
+- **`resume`**: Boolean indicating whether to resume a previous run.
+- **`fit_entire_data`**: If `false`, low-quality frequency bins are removed, creating a hybrid between Welch and tBilby methods.
+- **`N_noise_samples`**: Number of noise samples to generate during the analysis.
+- **`skip_samples_writing`**: Boolean indicating whether to skip writing samples to disk.
+- **`N_live_points`**: Number of live points used in the sampling process.
 
-- **`min_freq_spacing`**: `30`  
-  For a point to be identified as a "cut" point, it has to be in an empty (from lines) segment of `min_freq_spacing` Hz.
-  
-- **`min_freq_segment`**: `100`  
-  Each segment should be larger than `min_freq_segment` Hz.
-
-- **`use_low_freq_detector`**: `False`  
-  Initiate a simple lines detector in the low-frequency region, in addition to the usual lines detection algorithm.
-  
-- **`low_freq_limit_detector`**: `40`  
-  Determines the frequency below which the line detector works.
+## Debugging
+- **`debug`**: Boolean enabling debugging mode for additional logging and diagnostics.
 
 ## Notes
-
-- Make sure to adjust the configuration options according to your analysis needs.
-- The package is still under development, so some bugs may appear. 
+- Ensure all required parameters are correctly set before running the analysis.
+- Modify paths and user-specific settings (e.g., `outdir` and `user_label`) as needed.
