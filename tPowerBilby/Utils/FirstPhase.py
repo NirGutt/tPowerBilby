@@ -2,7 +2,7 @@ from scipy import interpolate
 import inspect
 from bilby.core.prior import LogUniform
 import bilby 
-from context import tbilby
+import tbilby
 import re 
 import numpy as np
 import matplotlib.pyplot as plt
