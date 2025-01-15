@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from bilby.core.prior import LogUniform
 from . import asd_utilies 
-from context import tbilby
+import tbilby
 from sklearn.linear_model import RANSACRegressor
 from sklearn.base import BaseEstimator, RegressorMixin
 from .asd_utilies import logger
