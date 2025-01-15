@@ -6,7 +6,7 @@ In a nutshell, by default, the ASD data is split into several parts. Each part i
 
 ## Quick Links
 
-- [tPowerBilby Paper](https://arxiv.org/pdf/2404.04460) - still missing
+- [tPowerBilby Paper](https://arxiv.org/abs/2501.03285)
 - [tBilby Paper](https://arxiv.org/pdf/2404.04460)
 - [tBilby Repository](https://github.com/tBilby/tBilby.git)
 
