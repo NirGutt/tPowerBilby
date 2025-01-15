@@ -4,6 +4,8 @@
 
 In a nutshell, by default, the ASD data is split into several parts. Each part is treated almost independently, where a transdimensional Bayesian inference finds the best description for it. Then, during post-processing, a final posterior sample is produced. These steps are taken to maintain reasonable inference time with very high flexibility (i.e., many parameters).  
 
+Please note that the code is still undergoing an improvement phase, with further refinements and enhancements expected in the future.
+
 ## Quick Links
 
 - [tPowerBilby Paper](https://arxiv.org/abs/2501.03285)
