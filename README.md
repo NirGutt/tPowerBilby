@@ -15,7 +15,7 @@ Please note that the code is still undergoing an improvement phase, with further
 ## Documentation Links
 
 - [Full list of Configuration Options](doc/README_config.md)
-- [Output details](doc/README_postprocessing.md)
+
 
 ## Installation
 
