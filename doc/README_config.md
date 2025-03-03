@@ -19,8 +19,6 @@ This document provides an explanation of the configuration parameters used in th
 - **`pre_processing_end_time`**: The end time for preprocessing.
 
 ## Sampling Settings
-- **`n_exp`**: Number of exponentials used for sampling.
-- **`n_lines`**: Number of spectral lines to include in the model for each segment.
 - **`user_label`**: User-defined label for the analysis (e.g., `'GW150419'`).
 - **`outdir`**: Directory where output files will be stored.
 - **`resume`**: Boolean indicating whether to resume a previous run.
@@ -29,6 +27,15 @@ This document provides an explanation of the configuration parameters used in th
 - **`skip_samples_writing`**: Boolean indicating whether to skip writing samples to disk.
 - **`N_live_points`**: Number of live points used in the sampling process.
 
+## Prior Settings
+- **`n_exp`**: Number of exponentials used for sampling.
+- **`n_lines`**: Number of spectral lines to include in the model for each segment.
+- **`alpha1`**: A constant value for the second spectral index (the first spectral index cannot be set to constant due to a technical issue, which might be resolved in the future).
+- **`alpha2`**: A constant value for the third spectral index.
+- **`alpha3`**: A constant value for the fourth spectral index.
+- **`alpha4`**: A constant value for the fifth spectral index.
+- **`lines_prior`**: An array of frequency ranges (Hz) that contains lines. This will be added to the preprocessing analysis. The array must have an even number of elements, as each pair of entries defines the start and end of a range (e.g., [30, 50, 345, 347] indicates that a line exists between 30–50 Hz and 345–347 Hz).
+  
 ## Debugging
 - **`debug`**: Boolean enabling debugging mode for additional logging and diagnostics.
 
