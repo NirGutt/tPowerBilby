@@ -3,7 +3,7 @@
 This document provides an explanation of the configuration parameters used in the analysis. 
 
 ## General Configuration
-- **`det`**: Specifies the detector to use (e.g., `'H1'` for LIGO Hanford).
+- **`det`**: Specifies the detector to use (e.g., `'H1'` for LIGO Hanford, 'L1' and 'V1' are also supported).
 - **`trigger_time`**: The GPS time of the event trigger.
 - **`maximum_frequency`**: Maximum frequency in Hz for the analysis range.
 - **`minimum_frequency`**: Minimum frequency in Hz for the analysis range.
