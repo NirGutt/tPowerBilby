@@ -10,14 +10,23 @@ import os
 from .asd_utilies import logger
 
 
-class TransdimensionalConditionalUniform_lamda(tbilby.core.prior.TransdimensionalConditionalUniform):   
+class TransdimensionalConditionalUniform_lamda(tbilby.core.prior.TransdimensionalConditionalUniform): 
+    
     def transdimensional_condition_function(self,**required_variables):
         # setting the mimmum according the the last peak value
             minimum = self.minimum
+            maximum = self.maximum
+
+            if not hasattr(self, "keep_delta"):                
+                self.keep_delta=maximum - minimum 
+                logger(f"initially setting, self.keep_delta = {self.keep_delta}","TransdimensionalConditionalUniform_lamda")
+
             if(len(self.lamda)>0): # handle the first mu case
                 minimum = self.lamda[-1] # set the minimum to be the location of the last peak 
-                           
-            return dict(minimum=minimum)
+                if self.keep_delta>0:
+                    maximum =minimum +self.keep_delta # keeping the probability alive, so no shrinkage happens 
+     
+            return dict(minimum=minimum,maximum =maximum)
 
 class TransdimensionalConditionalUniform_sAmp(tbilby.core.prior.TransdimensionalConditionalUniform):
     def set_extra_data(self,try_cls):
@@ -192,7 +201,7 @@ def run_PL_fit(x,y,x_est,welch_y,preprocess_cls,outdir,label='',num_of_samples=1
     priors_t['n_exp'] = tbilby.core.prior.DiscreteUniform(1,n_exp,'n_exp')
     priors_t  = tbilby.core.base.create_plain_priors(LogUniform,'A',n_exp,prior_dict_to_add=priors_t,minimum=1e-30, maximum=1e-13)  
     priors_t = tbilby.core.base.create_transdimensional_priors(TransdimensionalConditionalUniform_lamda,'lamda',nmax=n_exp,nested_conditional_transdimensional_params=['lamda'],conditional_params=[],prior_dict_to_add=priors_t,minimum=-10,maximum=2)
-    
+     
     for sh_no in np.arange(sh_deg):
         priors_t[f'n_shaplets{sh_no}'] = tbilby.core.prior.DiscreteUniform(0,sh_deg,f'n_shaplets{sh_no}')
     
