@@ -1,5 +1,5 @@
 import bilby 
-import tbilby
+from context import tbilby
 import pickle
 import numpy as np
 from scipy import interpolate
@@ -521,19 +521,19 @@ if config['fit_entire_data']==True:
      I_keep_data_indices = np.array(I_keep_data_indices)
 
 y_peaks_int,fit_lines_prior = FPH.process_lines_prior(gap_threshold=10,x=x,x_peaks=PreProcesstPowerBilby_class.lines_prior_x
-                                                              ,y_peaks=PreProcesstPowerBilby_class.lines_prior_y )
+                                                              ,y_peaks_in=PreProcesstPowerBilby_class.lines_prior_y,config=config )
 
 
 I_FPH = y_peaks_int == 0 
 np.save(outdir+'/Output/'+label+'_smooth_indices.npy', I_FPH)
-logger('saved braodband freq. indicate to work on ',inspect.currentframe().f_code.co_name)
+logger('saved broadband freq. indices to work on ',inspect.currentframe().f_code.co_name)
 #print(('keep smooth indicaes shape ',I_FPH.shape ))
 
 
 x_est= get_x_est(x)
 
 sampled_1st,no_lines_curve,model_smooth,df_samples_1st = FPH.run_PL_fit(x=x[I_FPH],y=y[I_FPH],x_est=x_est,welch_y=PreProcesstPowerBilby_class.welch_y[I_FPH],
-                                                                        preprocess_cls=PreProcesstPowerBilby_class,outdir=outdir,label=label,num_of_samples=N_samples,
+                                                                        preprocess_cls=PreProcesstPowerBilby_class,outdir=outdir,config=config,label=label,num_of_samples=N_samples,
                                                                         resume=resume,n_exp=config['n_exp'],debug=config['debug'])
 skip_samples_writing=config['skip_samples_writing']
 # save hybrid samples 
