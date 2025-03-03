@@ -2,13 +2,41 @@ from scipy import interpolate
 import inspect
 from bilby.core.prior import LogUniform
 import bilby 
-import tbilby
+from context import tbilby
 import re 
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 from .asd_utilies import logger
 
+
+class TransdimensionalConditionalLogUniform_Amp(tbilby.core.prior.TransdimensionalConditionalLogUniform): 
+    
+    def transdimensional_condition_function(self,**required_variables):
+        # setting the mimmum according the the last peak value
+            
+            maximum = self.maximum
+            minimum = self.minimum
+
+            if not hasattr(self, "keep_delta"):
+                self.keep_delta=np.log10(maximum) - np.log10(minimum)  
+                logger(f"initially setting, self.keep_delta = {self.keep_delta}","TransdimensionalConditionalLogUniform_Amp")
+
+    
+            if(len(self.A)>0): # handle the first mu case
+                maximum = self.A[-1] # set the maximum to be the location of the last peak 
+                if self.keep_delta>0:
+                    minimum = 10**(np.log10(maximum) - self.keep_delta) # keeping the probability alive, so no shrinkage happens 
+                    #logger(f"maximum = {maximum}","TransdimensionalConditionalUniform_lamda")
+            
+                            
+                #logger(f"self.keep_delta = {self.keep_delta}","TransdimensionalConditionalUniform_lamda")
+            #logger(f"min: {minimum}","TransdimensionalConditionalLogUniform_Amp")
+            #logger(f"max: {maximum}","TransdimensionalConditionalLogUniform_Amp")
+            return dict(minimum=minimum,maximum =maximum)
+
+
+const_lamda_dict={}
 
 class TransdimensionalConditionalUniform_lamda(tbilby.core.prior.TransdimensionalConditionalUniform): 
     
@@ -25,7 +53,14 @@ class TransdimensionalConditionalUniform_lamda(tbilby.core.prior.Transdimensiona
                 minimum = self.lamda[-1] # set the minimum to be the location of the last peak 
                 if self.keep_delta>0:
                     maximum =minimum +self.keep_delta # keeping the probability alive, so no shrinkage happens 
-     
+                    #logger(f"maximum = {maximum}","TransdimensionalConditionalUniform_lamda")
+                if self.name in const_lamda_dict:
+                    minimum = np.ones_like(minimum) * const_lamda_dict[self.name] if isinstance(minimum, (np.ndarray, list)) else const_lamda_dict[self.name]
+                    maximum = minimum+0.0001 
+
+                #logger(f"self.keep_delta = {self.keep_delta}","TransdimensionalConditionalUniform_lamda")
+            #logger(f"min: {self.name} {minimum}" ,"TransdimensionalConditionalUniform_lamda")
+            #logger(f"max: {self.name} {maximum}","TransdimensionalConditionalUniform_lamda")
             return dict(minimum=minimum,maximum =maximum)
 
 class TransdimensionalConditionalUniform_sAmp(tbilby.core.prior.TransdimensionalConditionalUniform):
@@ -111,12 +146,26 @@ def shaplets3(x,n_shaplets3,s3x_center,s3beta,s3Amp):
    return s3Amp*shaplet_func(xfunc-s3x_center,n_shaplets3,s3beta)
 
   
-def process_lines_prior(gap_threshold,x,x_peaks,y_peaks):
+def process_lines_prior(gap_threshold,x,x_peaks,y_peaks_in,config):
         
-
+        y_peaks=y_peaks_in.copy()
+       
+        # loop over the regions, for make sure it is even  
+        
+        if len(config['lines_prior']) % 2 == 0:
+            
+            # for each pair teh relevant indices and set then to 1 
+            for i in range(0, len(config['lines_prior']), 2):
+                # find the indices 
+                Itmp = (x_peaks > config['lines_prior'][i])&(x_peaks < config['lines_prior'][i+1])
+                y_peaks[Itmp]=1 # set something different from 0 
+                logger(f"lines prior user setting {config['lines_prior'][i]} Hz-> {config['lines_prior'][i+1]} Hz is applied",inspect.currentframe().f_code.co_name ) 
+        else:
+            logger('lines prior user setting isnt of even length, ignoring ',inspect.currentframe().f_code.co_name )    
+       
         # Find the indices where y > 0 (non-zero regions)
-        non_zero_indices = np.where(y_peaks > 0)[0]
-        
+        non_zero_indices = np.where(y_peaks > 0)[0]    
+
         # Fill small gaps by checking distances between non-zero indices
         for i in range(1, len(non_zero_indices)):
             if non_zero_indices[i] - non_zero_indices[i-1] <= gap_threshold:
@@ -178,7 +227,7 @@ class myGaussianLikelihood(bilby.Likelihood):
 
 
 
-def run_PL_fit(x,y,x_est,welch_y,preprocess_cls,outdir,label='',num_of_samples=1000,n_live=400,resume=False,n_exp=5,debug=False):
+def run_PL_fit(x,y,x_est,welch_y,preprocess_cls,outdir,config,label='',num_of_samples=1000,n_live=400,resume=False,n_exp=5,debug=False):
      
     sh_deg=4
     n_shaplets0=sh_deg
@@ -199,9 +248,23 @@ def run_PL_fit(x,y,x_est,welch_y,preprocess_cls,outdir,label='',num_of_samples=1
     
     priors_t = bilby.core.prior.dict.ConditionalPriorDict()
     priors_t['n_exp'] = tbilby.core.prior.DiscreteUniform(1,n_exp,'n_exp')
-    priors_t  = tbilby.core.base.create_plain_priors(LogUniform,'A',n_exp,prior_dict_to_add=priors_t,minimum=1e-30, maximum=1e-13)  
+    
+    #priors_t  = tbilby.core.base.create_plain_priors(LogUniform,'A',n_exp,prior_dict_to_add=priors_t,minimum=1e-30, maximum=1e-13)  
+    # experimental version 
+    priors_t = tbilby.core.base.create_transdimensional_priors(TransdimensionalConditionalLogUniform_Amp,'A',nmax=n_exp,nested_conditional_transdimensional_params=['A'],conditional_params=[],prior_dict_to_add=priors_t,minimum=1e-30, maximum=1e-13)
+    
+
     priors_t = tbilby.core.base.create_transdimensional_priors(TransdimensionalConditionalUniform_lamda,'lamda',nmax=n_exp,nested_conditional_transdimensional_params=['lamda'],conditional_params=[],prior_dict_to_add=priors_t,minimum=-10,maximum=2)
-     
+    # set the values to consnta according to the user config
+
+
+
+    for alpha_i in np.arange(n_exp):
+        if f"alpha{alpha_i}" in config:
+            if config[f"alpha{alpha_i}"]> -100: # which is the defualt set value 
+                const_lamda_dict[f"lamda{alpha_i}"] = config[f"alpha{alpha_i}"]
+                logger('setting lamda'+str(alpha_i) + '=' + str(config[f"alpha{alpha_i}"]),inspect.currentframe().f_code.co_name)
+    
     for sh_no in np.arange(sh_deg):
         priors_t[f'n_shaplets{sh_no}'] = tbilby.core.prior.DiscreteUniform(0,sh_deg,f'n_shaplets{sh_no}')
     
