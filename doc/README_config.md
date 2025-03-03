@@ -28,7 +28,7 @@ This document provides an explanation of the configuration parameters used in th
 - **`N_live_points`**: Number of live points used in the sampling process.
 
 ## Prior Settings
-- **`n_exp`**: Number of exponentials used for sampling.
+- **`n_exp`**: Number of power laws for the broadband fit.
 - **`n_lines`**: Number of spectral lines to include in the model for each segment.
 - **`alpha1`**: A constant value for the second spectral index (the first spectral index cannot be set to constant due to a technical issue, which might be resolved in the future).
 - **`alpha2`**: A constant value for the third spectral index.
