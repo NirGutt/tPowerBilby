@@ -106,6 +106,16 @@ def handle_config(config):
     standarized_config['skip_samples_writing']=False
     standarized_config['N_live_points']= 700
 
+    # prior settings 
+    # oen can't set teh first one since it causes issue with teh sampling, this is a limitation for now  
+    standarized_config['alpha1']=-100.0
+    standarized_config['alpha2']=-100.0
+    standarized_config['alpha3']=-100.0
+    standarized_config['alpha4']=-100.0
+
+    standarized_config['lines_prior']=list([])
+
+
     standarized_config['debug']= True
 
 
